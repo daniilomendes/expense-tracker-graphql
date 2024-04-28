@@ -1,4 +1,3 @@
-import { users } from "../dummyData/data.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 
@@ -12,7 +11,7 @@ const userResolver = {
           throw new Error("Preencha todos os campos!");
         }
 
-        const existingUser = await User.findOnde({ username });
+        const existingUser = await User.findOne({ username });
 
         if (existingUser) {
           throw new Error("Este usuário já existe");
@@ -44,6 +43,8 @@ const userResolver = {
     login: async (_, { input }, context) => {
       try {
         const { username, password } = input;
+        if (!username || !password)
+          throw new Error("Todos os campos devem ser preenchidos.");
         const { user } = await context.authenticate("graphql-local", {
           username,
           password,

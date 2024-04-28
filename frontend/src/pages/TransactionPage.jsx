@@ -1,7 +1,10 @@
+import { useMutation, useQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useMutation, useQuery } from "@apollo/client";
-import { GET_TRANSACTION } from "../graphql/queries/transactions.query";
+import {
+  GET_TRANSACTION,
+  GET_TRANSACTION_STATISTICS,
+} from "../graphql/queries/transactions.query";
 import { UPDATE_TRANSACTION } from "../graphql/mutations/transaction.mutation";
 
 import TransactionFormSkeleton from "../components/skeletons/TransactionFormSkeleton ";

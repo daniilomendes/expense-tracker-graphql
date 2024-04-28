@@ -59,14 +59,12 @@ const transactionResolver = {
     deleteTransaction: async (_, { transactionId }) => {
       try {
         const deletedTransaction = await Transaction.findByIdAndDelete(
-          input.transactionId,
-          input,
-          { new: true }
+          transactionId
         );
         return deletedTransaction;
       } catch (err) {
-        console.error("Erro ao deletar a transação:", err);
-        throw new Error("Erro ao deletar a transação");
+        console.error("Erro ao deletar transação:", err);
+        throw new Error("Erro ao deletar transação");
       }
     },
   },

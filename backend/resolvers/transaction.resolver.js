@@ -1,4 +1,5 @@
 import Transaction from "../models/transaction.model.js";
+import User from "../models/user.model.js";
 
 const transactionResolver = {
   Query: {
@@ -23,6 +24,27 @@ const transactionResolver = {
         console.error("Erro ao obter a transação:", err);
         throw new Error("Erro ao obter a transação");
       }
+    },
+
+    categoryStatistics: async (_, __, context) => {
+      if (!context.getUser()) throw new Error("Unauthorized");
+      const userId = context.getUser()._id;
+
+      const transactions = await Transaction.find({ userId });
+      const categoryMap = {};
+
+      transactions.forEach((transaction) => {
+        if (!categoryMap[transaction.category]) {
+          categoryMap[transaction.category] = 0;
+        }
+
+        categoryMap[transaction.category] += transaction.amount;
+      });
+
+      return Object.entries(categoryMap).map(([category, totalAmount]) => ({
+        category,
+        totalAmount,
+      }));
     },
   },
 
@@ -65,6 +87,19 @@ const transactionResolver = {
       } catch (err) {
         console.error("Erro ao deletar transação:", err);
         throw new Error("Erro ao deletar transação");
+      }
+    },
+  },
+
+  Transaction: {
+    user: async (parent) => {
+      const userId = parent.userId;
+      try {
+        const user = await User.findById(userId);
+        return user;
+      } catch (err) {
+        console.error("Erro ao obter usuário:", err);
+        throw new Error("Erro ao obter usuário");
       }
     },
   },
